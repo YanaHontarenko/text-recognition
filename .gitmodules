@@ -1,9 +1,0 @@
-[submodule "CRNN_Tensorflow"]
-	path = CRNN_Tensorflow
-	url = git@github.com:MaybeShewill-CV/CRNN_Tensorflow.git
-[submodule "sar-pytorch"]
-	path = sar-pytorch
-	url = git@github.com:liuch37/sar-pytorch.git
-[submodule "see"]
-	path = see
-	url = git@github.com:Bartzi/see.git
