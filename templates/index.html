@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 </head>
 <body>
-<form method="POST" action="/text_recognition" enctype=multipart/form-data>
+<form method="POST" action="/recognize" enctype=multipart/form-data>
     <div>Press to load audio and scoring pronunciation
         <input type="file" name="image" onchange="$(this).parent().parent().submit()"/>
     </div>
