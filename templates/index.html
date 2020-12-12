@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST" action="/text_recognition" enctype=multipart/form-data>
+    <div>Press to load audio and scoring pronunciation
+        <input type="file" name="image" onchange="$(this).parent().parent().submit()"/>
+    </div>
+</form>
+
+</body>
+</html>
