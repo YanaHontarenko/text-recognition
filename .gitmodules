@@ -4,9 +4,6 @@
 [submodule "sar-pytorch"]
 	path = sar-pytorch
 	url = https://github.com/liuch37/sar-pytorch
-[submodule "see"]
-	path = see
-	url = https://github.com/Bartzi/see
 [submodule "MaskTextSpotter"]
 	path = MaskTextSpotter
 	url = https://github.com/MhLiao/MaskTextSpotter
