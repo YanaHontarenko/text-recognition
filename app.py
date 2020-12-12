@@ -13,7 +13,7 @@ api = Api(app)
 def index():
     return render_template("index.html")
 
-api.add_resource("/recognize/<string:model_type>")
+api.add_resource(Recognizer, "/recognize/<string:model_type>")
 if __name__ == '__main__':
     PORT = int(os.getenv("PORT", 8080))
     HOST = os.getenv("HOST", "localhost")
