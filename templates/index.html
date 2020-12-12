@@ -6,11 +6,39 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 </head>
 <body>
-<form method="POST" action="/recognize" enctype=multipart/form-data>
-    <div>Press to load audio and scoring pronunciation
-        <input type="file" name="image" onchange="$(this).parent().parent().submit()"/>
-    </div>
-</form>
-
+<div id="dataDiv">
+    <select id="model_type">
+        <option value="" selected disabled hidden>Choose here</option>
+        <option value="model1">model1</option>
+        <option value="model2">model2</option>
+        <option value="model3">model3</option>
+        <option value="model4">model4</option>
+    </select>
+    <input type="file" id="image"/>
+    <button onclick="recognize()">Recognize</button>
+</div>
 </body>
+<script>
+    function recognize() {
+        let modelType = document.getElementById("model_type").value;
+        let blobImage = $('#image').get(0).files[0];
+        let formData = new FormData();
+
+        formData.append("image", blobImage);
+
+        $.ajax({
+            url: "/recognize/" + modelType,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                window.location.replace(response);
+            },
+            error: function (jqXHR, textStatus, errorMessage) {
+                console.log(errorMessage); // Optional
+            }
+        });
+    }
+</script>
 </html>
