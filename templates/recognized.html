@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" http-equiv="Cache-Control" content="no-cache">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/helpers.js') }}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type=text/css href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-{{model_type}}
+<div id="dataDiv">
+    <p id="output">{{message}}</p>
+    <img id="processedImage" src="{{url_for('static', filename=image_path)}}" alt="imageWithRecognizedText" class="rounded"/>
+    <form action="/" method="GET">
+        <button type="submit" class="btn btn-light">Return to the main page</button>
+    </form>
+</div>
 </body>
 </html>
