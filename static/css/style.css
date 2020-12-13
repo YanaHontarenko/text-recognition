@@ -14,5 +14,5 @@ body {
 
 #imagePreview, #processedImage {
   width: 80%;
-  margin: 20px auto auto auto;
+  margin: 20px auto 20px auto;
 }
