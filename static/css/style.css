@@ -1,5 +1,5 @@
 body {
-  background: url('https://source.unsplash.com/twukN12EN7c/1920x1080') no-repeat center center fixed;
+  background: url('https://images.wallpaperscraft.com/image/points_cubes_background_light_91691_2560x1600.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -15,4 +15,10 @@ body {
 #imagePreview, #processedImage {
   width: 80%;
   margin: 20px auto 20px auto;
+}
+
+#output {
+  font-size: 20px;
+  color: white;
+  margin: 0 0 0 0;
 }
