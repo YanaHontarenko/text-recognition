@@ -12,7 +12,7 @@ body {
   text-align: center;
 }
 
-#imagePreview {
+#imagePreview, #processedImage {
   width: 80%;
   margin: 20px auto auto auto;
 }
