@@ -7,3 +7,6 @@
 [submodule "MaskTextSpotter"]
 	path = MaskTextSpotter
 	url = https://github.com/MhLiao/MaskTextSpotter
+[submodule "CRAFT-pytorch"]
+	path = CRAFT-pytorch
+	url = https://github.com/clovaai/CRAFT-pytorch
