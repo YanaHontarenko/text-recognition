@@ -77,11 +77,11 @@ class CRNNWrapper():
 
 
 if __name__ == '__main__':
-    craft = CRNNWrapper(os.path.join("data", "crnn-pretrained", "shadownet.ckpt-80000"),
+    crnn = CRNNWrapper(os.path.join("data", "crnn-pretrained", "shadownet.ckpt-80000"),
                         os.path.join("data", "crnn-dicts", "char_dict_en.json"),
                         os.path.join("data", "crnn-dicts", "ord_map_en.json"))
     image = cv2.imread(os.path.join("data", "images_to_test", "test_recognizer.png"))
-    text, t = craft.recognize(image)
+    text, t = crnn.recognize(image)
     cv2.imshow(text, image)
     key = cv2.waitKey(0)
     if key == 27:
