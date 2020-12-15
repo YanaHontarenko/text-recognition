@@ -61,10 +61,10 @@ class CRNNWrapper():
         self.sess_config.gpu_options.allow_growth = CFG.TEST.TF_ALLOW_GROWTH
 
     def recognize(self, image):
+        start = time()
         image = cv2.resize(image, dsize=tuple(CFG.ARCH.INPUT_SIZE), interpolation=cv2.INTER_LINEAR)
         image = np.array(image, np.float32) / 127.5 - 1.0
 
-        start = time()
         sess = tf.Session(config=self.sess_config)
 
         with sess.as_default():
