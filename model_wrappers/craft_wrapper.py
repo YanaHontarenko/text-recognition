@@ -17,14 +17,6 @@ class CRAFTWrapper():
     def __init__(self, weights_path):
         self.model = CRAFT()
         self.cuda = torch.cuda.is_available()
-        if self.cuda:
-            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path)))
-            self.model = self.model.cuda()
-            self.model = torch.nn.DataParallel(self.model)
-            # cudnn.benchmark = False
-        else:
-            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path, map_location='cpu')))
-        self.model.eval()
         self.text_threshold = 0.7
         self.link_threshold = 0.4
         self.low_text = 0.4
@@ -32,6 +24,7 @@ class CRAFTWrapper():
         self.canvas_size = 1280
         self.mag_ratio = 1.5
         self.poly = False
+        self.load_model()
 
     @staticmethod
     def copy_state_dict(state_dict):
@@ -44,6 +37,16 @@ class CRAFTWrapper():
             name = ".".join(k.split(".")[start_idx:])
             new_state_dict[name] = v
         return new_state_dict
+
+    def load_model(self):
+        if self.cuda:
+            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path)))
+            self.model = self.model.cuda()
+            self.model = torch.nn.DataParallel(self.model)
+            # cudnn.benchmark = False
+        else:
+            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path, map_location='cpu')))
+        self.model.eval()
 
     def detect(self, image):
         start = time()
