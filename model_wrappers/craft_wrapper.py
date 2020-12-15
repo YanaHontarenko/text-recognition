@@ -16,6 +16,7 @@ from torch.autograd import Variable
 class CRAFTWrapper():
     def __init__(self, weights_path):
         self.model = CRAFT()
+        self.weights_path = weights_path
         self.cuda = torch.cuda.is_available()
         self.text_threshold = 0.7
         self.link_threshold = 0.4
@@ -40,12 +41,10 @@ class CRAFTWrapper():
 
     def load_model(self):
         if self.cuda:
-            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path)))
+            self.model.load_state_dict(self.copy_state_dict(torch.load(self.weights_path)))
             self.model = self.model.cuda()
-            self.model = torch.nn.DataParallel(self.model)
-            # cudnn.benchmark = False
         else:
-            self.model.load_state_dict(self.copy_state_dict(torch.load(weights_path, map_location='cpu')))
+            self.model.load_state_dict(self.copy_state_dict(torch.load(self.weights_path, map_location='cpu')))
         self.model.eval()
 
     def detect(self, image):
