@@ -76,6 +76,7 @@ class CRAFTWrapper():
         # coordinate adjustment
         boxes = craft_utils.adjustResultCoordinates(boxes, ratio_w, ratio_h)
 
+        # TODO: return cropped text's images
         for i, box in enumerate(boxes):
             poly = np.array(box).astype(np.int32).reshape((-1))
             poly = poly.reshape(-1, 2)
