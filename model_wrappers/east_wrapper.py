@@ -25,12 +25,13 @@ class EASTWrapper:
 
     def detect(self, image):
         start = time()
-        h, w = image.shape[:2]
+        image_to_draw = image.copy()
+        h, w = image_to_draw.shape[:2]
 
         ratio_width = w / float(self.new_width)
         ratio_height = h / float(self.new_height)
 
-        blob = cv2.dnn.blobFromImage(image, 1.0, (self.new_width, self.new_height), (123.68, 116.78, 103.94), True, False)
+        blob = cv2.dnn.blobFromImage(image_to_draw, 1.0, (self.new_width, self.new_height), (123.68, 116.78, 103.94), True, False)
 
         # Run the model
         self.net.setInput(blob)
@@ -42,6 +43,7 @@ class EASTWrapper:
         [boxes, confidences] = self.decode(scores, geometry, self.conf_threshold)
 
         indices = cv2.dnn.NMSBoxesRotated(boxes, confidences, self.conf_threshold, self.nms_threshold)
+        text_parts = []
         for i in indices:
             # get 4 corners of the rotated rect
             vertices = cv2.boxPoints(boxes[i[0]])
@@ -49,11 +51,20 @@ class EASTWrapper:
             for j in range(4):
                 vertices[j][0] *= ratio_width
                 vertices[j][1] *= ratio_height
+            points = []
             for j in range(4):
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
-                cv2.line(image, p1, p2, (0, 255, 0), 1)
-        return image, time() - start
+                points.append((p1, p2))
+                cv2.line(image_to_draw, p1, p2, (0, 255, 0), 1)
+            x = [int(x) for point in points for y, x in point]
+            y = [int(y) for point in points for y, x in point]
+            min_x = max(0, min(x) - 5)
+            min_y = max(0, min(y) - 5)
+            max_x = min(w, max(x) + 5)
+            max_y = max(h, max(y) + 5)
+            text_parts.append(image[min_x:max_x, min_y:max_y, :])
+        return image_to_draw, text_parts, time() - start
 
     def decode(self, scores, geometry, scoreThresh):
         detections = []
@@ -106,8 +117,8 @@ class EASTWrapper:
 if __name__ == '__main__':
     image = cv2.imread(os.path.join("data", "images_to_test", "test_detector.jpg"))
     east = EASTWrapper(os.path.join("data", "east-model", "frozen_east_text_detection.pb"))
-    image, _ = east.detect(image)
-    cv2.imshow("After", image)
+    image, text_parts, _ = east.detect(image)
+    cv2.imshow("Detected", image)
     key = cv2.waitKey(0)
     if key == 27:
         pass
