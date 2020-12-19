@@ -63,7 +63,7 @@ class EASTWrapper:
             min_y = max(0, min(y) - 5)
             max_x = min(w, max(x) + 5)
             max_y = max(h, max(y) + 5)
-            text_parts.append(image[min_x:max_x, min_y:max_y, :])
+            text_parts.append((min_x, min_y), (max_x, max_y))
         return image_to_draw, text_parts, time() - start
 
     def decode(self, scores, geometry, scoreThresh):
