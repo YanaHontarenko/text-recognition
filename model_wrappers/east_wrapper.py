@@ -56,7 +56,7 @@ class EASTWrapper:
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 points.append((p1, p2))
-                cv2.line(image_to_draw, p1, p2, (0, 255, 0), 1)
+                cv2.line(image_to_draw, p1, p2, (0, 0, 255), 2)
             x = [int(x) for point in points for x, y in point]
             y = [int(y) for point in points for x, y in point]
             min_x = max(0, min(x) - 5)
