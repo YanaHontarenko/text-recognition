@@ -49,12 +49,14 @@ class CRAFTWrapper():
 
     def detect(self, image):
         start = time()
+        image_to_draw = image.copy()
 
-        img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image, self.canvas_size,
+        img_resized, target_ratio, size_heatmap = imgproc.resize_aspect_ratio(image_to_draw, self.canvas_size,
                                                                               interpolation=cv2.INTER_LINEAR,
                                                                               mag_ratio=self.mag_ratio)
         ratio_h = ratio_w = 1 / target_ratio
 
+        w, h, _ = image.shape
         # preprocessing
         x = imgproc.normalizeMeanVariance(img_resized)
         x = torch.from_numpy(x).permute(2, 0, 1)  # [h, w, c] to [c, h, w]
@@ -76,21 +78,28 @@ class CRAFTWrapper():
         # coordinate adjustment
         boxes = craft_utils.adjustResultCoordinates(boxes, ratio_w, ratio_h)
 
-        # TODO: return cropped text's images
+        text_parts = []
         for i, box in enumerate(boxes):
             poly = np.array(box).astype(np.int32).reshape((-1))
             poly = poly.reshape(-1, 2)
+            x = [int(point[1]) for point in poly]
+            y = [int(point[0]) for point in poly]
+            min_x = max(0, min(x) - 5)
+            min_y = max(0, min(y) - 5)
+            max_x = min(w, max(x) + 5)
+            max_y = min(h, max(y) + 5)
+            text_parts.append((min_x, min_y, max_x, max_y))
 
-            cv2.polylines(image, [poly.reshape((-1, 1, 2))], True, color=(0, 0, 255), thickness=2)
+            cv2.polylines(image_to_draw, [poly.reshape((-1, 1, 2))], True, color=(0, 0, 255), thickness=2)
 
-        return image, time() - start
+        return image_to_draw, text_parts, time() - start
 
 
 if __name__ == '__main__':
-    craft = CRAFTWrapper(os.path.join("data", "craft-models", "craft_mlt_25k.pth"))
-    image = cv2.imread(os.path.join("data", "images_to_test", "test_detector.jpg"))
-    image, t = craft.detect(image)
-    cv2.imshow("After", image)
+    craft = CRAFTWrapper(os.path.join("data", "craft-model", "craft_mlt_25k.pth"))
+    image = cv2.imread(os.path.join("data", "images-to-test", "test-detector.jpg"))
+    image, text_parts, t = craft.detect(image)
+    cv2.imshow("Detected", image)
     key = cv2.waitKey(0)
     if key == 27:
         pass
