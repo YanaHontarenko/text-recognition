@@ -57,13 +57,13 @@ class EASTWrapper:
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 points.append((p1, p2))
                 cv2.line(image_to_draw, p1, p2, (0, 255, 0), 1)
-            x = [int(x) for point in points for y, x in point]
-            y = [int(y) for point in points for y, x in point]
+            x = [int(x) for point in points for x, y in point]
+            y = [int(y) for point in points for x, y in point]
             min_x = max(0, min(x) - 5)
             min_y = max(0, min(y) - 5)
             max_x = min(w, max(x) + 5)
-            max_y = max(h, max(y) + 5)
-            text_parts.append((min_x, min_y), (max_x, max_y))
+            max_y = min(h, max(y) + 5)
+            text_parts.append([min_x, min_y, max_x, max_y])
         return image_to_draw, text_parts, time() - start
 
     def decode(self, scores, geometry, scoreThresh):
@@ -115,10 +115,12 @@ class EASTWrapper:
 
 
 if __name__ == '__main__':
-    image = cv2.imread(os.path.join("data", "images_to_test", "test_detector.jpg"))
+    image = cv2.imread(os.path.join("data", "images-to-test", "test-detector.jpg"))
     east = EASTWrapper(os.path.join("data", "east-model", "frozen_east_text_detection.pb"))
-    image, text_parts, _ = east.detect(image)
-    cv2.imshow("Detected", image)
+    image_with_bbox, text_parts, _ = east.detect(image)
+    cv2.imshow("Detected", image_with_bbox)
+    for i, text in enumerate(text_parts):
+        cv2.imwrite(f"{i}.jpg", image[text[1]:text[3], text[0]:text[2], :])
     key = cv2.waitKey(0)
     if key == 27:
         pass

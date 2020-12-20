@@ -56,7 +56,7 @@ class CRAFTWrapper():
                                                                               mag_ratio=self.mag_ratio)
         ratio_h = ratio_w = 1 / target_ratio
 
-        w, h, _ = image.shape
+        h, w, _ = image.shape
         # preprocessing
         x = imgproc.normalizeMeanVariance(img_resized)
         x = torch.from_numpy(x).permute(2, 0, 1)  # [h, w, c] to [c, h, w]
@@ -82,8 +82,8 @@ class CRAFTWrapper():
         for i, box in enumerate(boxes):
             poly = np.array(box).astype(np.int32).reshape((-1))
             poly = poly.reshape(-1, 2)
-            x = [int(point[1]) for point in poly]
-            y = [int(point[0]) for point in poly]
+            x = [int(point[0]) for point in poly]
+            y = [int(point[1]) for point in poly]
             min_x = max(0, min(x) - 5)
             min_y = max(0, min(y) - 5)
             max_x = min(w, max(x) + 5)
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     image_with_bbox, text_parts, t = craft.detect(image)
     cv2.imshow("Detected", image_with_bbox)
     for i, text in enumerate(text_parts):
-        cv2.imwrite(f"{i}.jpg", image[text[0]:text[2], text[1]:text[3], :])
+        cv2.imwrite(f"{i}.jpg", image[text[1]:text[3], text[0]:text[2], :])
     key = cv2.waitKey(0)
     if key == 27:
         pass
