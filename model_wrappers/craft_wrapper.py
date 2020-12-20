@@ -98,8 +98,8 @@ class CRAFTWrapper():
 if __name__ == '__main__':
     craft = CRAFTWrapper(os.path.join("data", "craft-model", "craft_mlt_25k.pth"))
     image = cv2.imread(os.path.join("data", "images-to-test", "test-detector.jpg"))
-    image, text_parts, t = craft.detect(image)
-    cv2.imshow("Detected", image)
+    image_with_bbox, text_parts, t = craft.detect(image)
+    cv2.imshow("Detected", image_with_bbox)
     key = cv2.waitKey(0)
     if key == 27:
         pass
