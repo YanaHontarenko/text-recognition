@@ -88,7 +88,7 @@ class CRAFTWrapper():
             min_y = max(0, min(y) - 5)
             max_x = min(w, max(x) + 5)
             max_y = min(h, max(y) + 5)
-            text_parts.append((min_x, min_y, max_x, max_y))
+            text_parts.append([min_x, min_y, max_x, max_y])
 
             cv2.polylines(image_to_draw, [poly.reshape((-1, 1, 2))], True, color=(0, 0, 255), thickness=2)
 
@@ -100,6 +100,8 @@ if __name__ == '__main__':
     image = cv2.imread(os.path.join("data", "images-to-test", "test-detector.jpg"))
     image_with_bbox, text_parts, t = craft.detect(image)
     cv2.imshow("Detected", image_with_bbox)
+    for i, text in enumerate(text_parts):
+        cv2.imwrite(f"{i}.jpg", image[text[0]:text[2], text[1]:text[3], :])
     key = cv2.waitKey(0)
     if key == 27:
         pass
