@@ -14,7 +14,7 @@ from time import time
 CFG = global_config.cfg
 
 
-class CRNNWrapper():
+class CRNNWrapper:
 
     def __init__(self, weights_path, char_dict_path, ord_map_dict_path):
         self.weights_path = weights_path
@@ -23,15 +23,23 @@ class CRNNWrapper():
         self.load_model()
 
     def load_model(self):
-        self.inputdata = tf.placeholder(
-            dtype=tf.float32,
-            shape=[1, CFG.ARCH.INPUT_SIZE[1], CFG.ARCH.INPUT_SIZE[0], CFG.ARCH.INPUT_CHANNELS],
-            name='input'
-        )
-
         self.codec = tf_io_pipline_fast_tools.CrnnFeatureReader(
             char_dict_path=self.char_dict_path,
             ord_map_dict_path=self.ord_map_dict_path
+        )
+
+        # config tf session
+        self.sess_config = tf.ConfigProto(allow_soft_placement=True)
+        self.sess_config.gpu_options.per_process_gpu_memory_fraction = CFG.TEST.GPU_MEMORY_FRACTION
+        self.sess_config.gpu_options.allow_growth = CFG.TEST.TF_ALLOW_GROWTH
+
+    def recognize(self, image):
+        start = time()
+
+        inputdata = tf.placeholder(
+            dtype=tf.float32,
+            shape=[1, CFG.ARCH.INPUT_SIZE[1], CFG.ARCH.INPUT_SIZE[0], CFG.ARCH.INPUT_CHANNELS],
+            name='input'
         )
 
         net = crnn_net.ShadowNet(
@@ -42,34 +50,27 @@ class CRNNWrapper():
         )
 
         inference_ret = net.inference(
-            inputdata=self.inputdata,
+            inputdata=inputdata,
             name='shadow_net',
-            reuse=False
+            reuse=tf.compat.v1.AUTO_REUSE
         )
 
-        self.decodes, _ = tf.nn.ctc_greedy_decoder(
+        decodes, _ = tf.nn.ctc_greedy_decoder(
             inference_ret,
             CFG.ARCH.SEQ_LENGTH * np.ones(1),
             merge_repeated=True
         )
 
-        self.saver = tf.train.Saver()
+        saver = tf.train.Saver()
 
-        # config tf session
-        self.sess_config = tf.ConfigProto(allow_soft_placement=True)
-        self.sess_config.gpu_options.per_process_gpu_memory_fraction = CFG.TEST.GPU_MEMORY_FRACTION
-        self.sess_config.gpu_options.allow_growth = CFG.TEST.TF_ALLOW_GROWTH
-
-    def recognize(self, image):
-        start = time()
         image = cv2.resize(image, dsize=tuple(CFG.ARCH.INPUT_SIZE), interpolation=cv2.INTER_LINEAR)
         image = np.array(image, np.float32) / 127.5 - 1.0
 
         sess = tf.Session(config=self.sess_config)
 
         with sess.as_default():
-            self.saver.restore(sess=sess, save_path=self.weights_path)
-            preds = sess.run(self.decodes, feed_dict={self.inputdata: [image]})
+            saver.restore(sess=sess, save_path=self.weights_path)
+            preds = sess.run(decodes, feed_dict={inputdata: [image]})
             preds = self.codec.sparse_tensor_to_str(preds[0])[0]
 
         sess.close()
