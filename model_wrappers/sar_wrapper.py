@@ -70,7 +70,7 @@ class SARWrapper:
 
 if __name__ == '__main__':
     sar = SARWrapper(os.path.join("data", "sar-models", "model_best_syn.pth"))
-    image = cv2.imread(os.path.join("data", "images_to_test", "test_recognizer.png"))
+    image = cv2.imread(os.path.join("data", "images-to-test", "test-recognizer.png"))
     text, t = sar.recognize(image)
     cv2.imshow(text, image)
     key = cv2.waitKey(0)
