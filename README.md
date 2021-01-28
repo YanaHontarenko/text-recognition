@@ -88,4 +88,9 @@ After this your data folder have to looks like this:
 ```
 python app.py
 ```
-Some testing results:
+### Some testing results:
+![east-crnn-result](media/east-crnn-result.png)
+
+![craft-sar-result](media/craft-sar-result.png)
+
+![mask-textspotter-result](media/mask-textspotter-result.png)
